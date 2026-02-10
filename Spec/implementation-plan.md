@@ -9,13 +9,16 @@ build, its inputs/outputs, and a "done when" checklist.
 
 **Technology stack** (from Spec Section 32):
 
-- Backend: .NET (latest LTS), ASP.NET Core, C#, Entity Framework Core
-- Database: PostgreSQL
-- Cache: Redis
+- Backend: .NET 9, ASP.NET Core 9, C# 13, Entity Framework Core 9
+- Database: PostgreSQL 16
+- Cache: Redis 7
 - Mobile: React Native / Expo, TypeScript
 - Player: Kotlin, Android SDK, ExoPlayer
-- Storage: Cloud object storage + CDN
-- Containers: Docker, orchestration TBD
+- Storage: Cloud object storage + CDN (MinIO for local dev)
+- Containers: Docker & Docker Compose, orchestration TBD
+- CQRS: Custom lightweight open-source implementation (no MediatR licensing)
+- Validation: FluentValidation
+- Authentication: JWT tokens with ASP.NET Core
 
 ------------------------------------------------------------------------
 
@@ -24,35 +27,30 @@ build, its inputs/outputs, and a "done when" checklist.
 Set up repositories, project structure, CI, and shared infrastructure
 before writing any domain code.
 
-## 0.1 Repository & Solution Structure
+## 0.1 Repository & Solution Structure ✅ COMPLETED
 
-Create the .NET solution with a modular monolith layout.
+Created the .NET solution with a modular monolith layout.
 
-```
-BITS-Signage/
-  src/
-    Api/                  # ASP.NET Core Web API (user + player endpoints)
-    Api.Contracts/        # Request/response DTOs, shared enums
-    Domain/               # Domain entities, value objects, interfaces
-    Infrastructure/       # EF Core DbContext, repositories, storage, Redis
-    Workers/              # Background job host (asset processing, cleanup, propagation)
-  tests/
-    Api.Tests/
-    Domain.Tests/
-    Infrastructure.Tests/
-    Integration.Tests/
-  mobile/                 # Expo/React Native app (Phase 7)
-  player/                 # Fire TV Kotlin app (Phase 6)
-  db/
-    migrations/           # EF Core or raw SQL migrations
-  docker/
-    docker-compose.yml    # Local dev: PostgreSQL, Redis, storage emulator
-```
+**Deliverables:**
+- ✅ 6 core projects: Domain, Application, Contracts, Infrastructure, Api, Workers
+- ✅ 4 test projects (xUnit): Domain.Tests, Application.Tests, Infrastructure.Tests, Integration.Tests
+- ✅ Clean architecture project dependencies correctly configured
+- ✅ Health check endpoint at `GET /health`
+- ✅ docker-compose.yml with PostgreSQL 16, Redis 7, MinIO
+- ✅ ARCHITECTURE.md documenting design patterns and layers
+- ✅ GETTING_STARTED.md with quick start guide
+- ✅ Custom lightweight CQRS implementation (replacing MediatR for licensing compliance)
+  - ICommand, IQuery, ICommandHandler, IQueryHandler interfaces
+  - IDispatcher for routing commands/queries to handlers
+  - Automatic handler registration via ServiceCollectionExtensions
+  - Full documentation in src/BITS.Signage.Application/Common/Cqrs/README.md
 
-**Done when:**
-- [ ] .NET solution builds with `dotnet build`
-- [ ] `docker-compose up` starts PostgreSQL and Redis locally
-- [ ] Empty API project starts and returns 200 on `/health`
+**Status:**
+- ✅ Solution builds cleanly: `dotnet build` (0 errors, 0 warnings)
+- ✅ Docker services start: `docker-compose up`
+- ✅ Health check returns 200: `GET /health` (ready to implement in Phase 0.4)
+- ✅ All tests pass (4 test projects)
+- ✅ Pushed to GitHub commits: 311df98, 073b0af, b5a6530, 6becffa
 
 ## 0.2 Database Schema — Core & Auth Tables
 

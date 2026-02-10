@@ -1,3 +1,6 @@
+using BITS.Signage.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
@@ -12,6 +15,12 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
+
+// Configure DbContext
+var connectionString = builder.Configuration.GetConnectionString("PostgreSql")
+    ?? "Host=localhost;Port=5432;Database=bits_signage;Username=bits_user;Password=bits_password";
+builder.Services.AddDbContext<BitsSignageDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
