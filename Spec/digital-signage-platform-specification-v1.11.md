@@ -2,7 +2,7 @@
 
 ## Full Product & Technical Specification (Current State)
 
-Version: 1.10 (Consolidated to current design state)
+Version: 1.11 (Content Groups)
 
 ------------------------------------------------------------------------
 
@@ -20,6 +20,7 @@ The system supports:
 -   Per-device content playback
 -   Time-of-day scheduling
 -   Playlist rotation
+-   Content groups (reusable asset collections)
 -   Offline-safe playback
 -   Remote device management
 -   Tenant-shared and venue-specific content
@@ -68,6 +69,7 @@ Tenant contains:
 
 -   Users
 -   Shared content library
+-   Shared content groups
 -   Playlists
 -   Venues
 
@@ -100,6 +102,7 @@ Features:
 
 -   Device management
 -   Asset upload
+-   Content group management
 -   Playlist editing
 -   Schedule management
 -   Publish workflows
@@ -143,6 +146,7 @@ Contains:
 -   Users
 -   Venues
 -   Shared assets
+-   Shared content groups
 -   Shared playlists
 
 ------------------------------------------------------------------------
@@ -157,6 +161,7 @@ Contains:
 -   Groups
 -   Schedules
 -   Venue content
+-   Venue content groups
 
 ------------------------------------------------------------------------
 
@@ -189,7 +194,7 @@ Tenant Viewer: - Read-only tenant view
 Venue Manager: - Manage devices - Manage schedules - Publish content -
 Run support commands
 
-Venue Editor: - Manage playlists - Manage schedules - Upload content
+Venue Editor: - Manage playlists - Manage content groups - Manage schedules - Upload content
 
 Venue Viewer: - Read-only access
 
@@ -235,9 +240,29 @@ Features:
 
 ------------------------------------------------------------------------
 
+## Content Group
+
+Reusable collection of assets that can be referenced by playlists.
+
+Features:
+
+-   Ordered list of assets
+-   Per-item duration override
+-   Draft & Published versions
+-   ETag concurrency
+-   Presence indicators
+-   Nesting: groups may contain other groups (maximum depth 3,
+    cycle detection enforced)
+
+Content groups are expanded server-side at playlist publish time.
+The manifest and player always see flat asset lists — content
+groups are a management-layer abstraction only.
+
+------------------------------------------------------------------------
+
 ## Content Scope
 
-Assets and playlists may be:
+Assets, content groups, and playlists may be:
 
 -   TENANT scoped (shared)
 -   VENUE scoped (local)
@@ -529,16 +554,52 @@ hourly).
 
 # 15. Publishing Workflow
 
-Both playlists and schedules use:
+Playlists, content groups, and schedules use a Draft → Publish workflow.
 
-Draft → Publish workflow.
+## 15.1 Playlist Publishing
 
 Publish actions:
 
--   Copy draft to published
--   Increment version
--   Increment tenant epoch
--   Devices refresh automatically
+-   Copy draft items to published snapshot.
+-   Content group expansion: any playlist item referencing a
+    `contentGroupId` is resolved to its published asset list at
+    publish time. The resulting PlaylistPublishedItem rows always
+    contain flat `assetId` references, with `sourceContentGroupId`
+    and `sourceContentGroupVersion` recorded for audit trail.
+-   Increment version.
+-   Increment venue epoch.
+-   Devices refresh automatically.
+
+Rollback supported via publish history.
+
+## 15.2 Content Group Publishing
+
+Content groups follow the same Draft → Publish workflow:
+
+-   Copy draft items to published snapshot.
+-   Increment version.
+-   On publish, the admin chooses a propagation mode:
+    -   **Auto-propagate** (`propagate: true`): the system
+        automatically re-publishes all playlists that reference this
+        content group, expanding the updated group items. Venue
+        epochs increment for affected venues. This counts as a
+        single publish operation for rate limiting purposes.
+    -   **Manual** (`propagate: false`): referencing playlists
+        retain their existing published content. The admin
+        re-publishes each playlist manually when ready.
+-   Rollback supported via publish history.
+
+## 15.3 Schedule Publishing
+
+Publish actions:
+
+-   Copy draft schedule to published snapshot.
+-   Increment version.
+-   Increment venue epoch.
+-   Devices refresh automatically.
+
+Schedules reference playlists, not content groups. Content group
+changes do not directly affect schedules.
 
 Rollback supported via publish history.
 
@@ -638,7 +699,7 @@ Dashboard: - Device status - Playback health - Alerts
 
 Device management: - Device detail - Commands - Configuration
 
-Content management: - Asset library - Playlists - Schedules
+Content management: - Asset library - Content groups - Playlists - Schedules
 
 Publishing: - History - Rollback
 
@@ -898,7 +959,8 @@ Example:
 
 -   EDIT_SHARED_LIBRARY
 
-Allows modifying tenant-wide content.
+Allows modifying tenant-wide content, including shared assets,
+playlists, and content groups.
 
 ------------------------------------------------------------------------
 
@@ -1213,7 +1275,64 @@ Notes:
 
 ------------------------------------------------------------------------
 
-## 26.7 Playlists
+## 26.7 Content Groups
+
+### ContentGroup
+
+-   contentGroupId (PK)
+-   tenantId (FK)
+-   scopeType (TENANT or VENUE)
+-   scopeVenueId (nullable FK — set when scopeType is VENUE)
+-   name
+-   draftVersion
+-   publishedVersion (nullable — null until first publish)
+-   createdAtUtc
+-   updatedAtUtc
+-   deletedAtUtc (nullable, soft delete)
+
+------------------------------------------------------------------------
+
+### ContentGroupItem
+
+-   contentGroupItemId (PK)
+-   contentGroupId (FK)
+-   assetId (nullable FK — mutually exclusive with childGroupId)
+-   childGroupId (nullable FK → ContentGroup — mutually exclusive
+    with assetId)
+-   sequence
+-   durationSeconds (nullable — overrides asset default when set)
+-   enabled
+
+Constraint: exactly one of `assetId` or `childGroupId` must be
+non-null. Nesting is limited to a maximum depth of 3 levels.
+
+------------------------------------------------------------------------
+
+### ContentGroupPublished
+
+-   contentGroupPublishedId (PK)
+-   contentGroupId (FK)
+-   publishedVersion
+-   publishedAtUtc
+-   publishedByUserId
+
+------------------------------------------------------------------------
+
+### ContentGroupPublishedItem
+
+-   contentGroupPublishedItemId (PK)
+-   contentGroupId (FK)
+-   publishedVersion
+-   assetId (nullable FK — mutually exclusive with childGroupId)
+-   childGroupId (nullable FK — mutually exclusive with assetId)
+-   childGroupPublishedVersion (nullable — the published version of
+    the child group at time of snapshot)
+-   sequence
+-   durationSeconds
+
+------------------------------------------------------------------------
+
+## 26.8 Playlists
 
 ### Playlist
 
@@ -1233,11 +1352,16 @@ Notes:
 
 -   playlistItemId (PK)
 -   playlistId
--   assetId
+-   assetId (nullable — mutually exclusive with contentGroupId)
+-   contentGroupId (nullable — mutually exclusive with assetId)
 -   sequence
 -   durationSeconds
 -   enabled
 -   timestamps
+
+Constraint: exactly one of `assetId` or `contentGroupId` must be
+non-null on each item. Enforced via application-level validation
+and recommended CHECK constraint at the database level.
 
 ------------------------------------------------------------------------
 
@@ -1256,13 +1380,18 @@ Notes:
 -   playlistPublishedItemId (PK)
 -   playlistId
 -   publishedVersion
--   assetId
+-   assetId (always populated — content groups are expanded at
+    publish time into individual asset rows)
 -   sequence
 -   durationSeconds
+-   sourceContentGroupId (nullable — set when this item originated
+    from a content group expansion, for audit trail)
+-   sourceContentGroupVersion (nullable — the published version of
+    the content group at the time of expansion)
 
 ------------------------------------------------------------------------
 
-## 26.8 Venue Scheduling
+## 26.9 Venue Scheduling
 
 ### VenueScheduleSet
 
@@ -1324,7 +1453,7 @@ Notes:
 
 ------------------------------------------------------------------------
 
-## 26.9 Venue Manifest Epoch
+## 26.10 Venue Manifest Epoch
 
 ### VenueEpoch
 
@@ -1337,7 +1466,7 @@ Epoch increments whenever playback-affecting data changes.
 
 ------------------------------------------------------------------------
 
-## 26.10 Telemetry & Commands
+## 26.11 Telemetry & Commands
 
 ### DeviceStatus
 
@@ -1376,28 +1505,31 @@ Epoch increments whenever playback-affecting data changes.
 
 ------------------------------------------------------------------------
 
-## 26.11 Publishing History
+## 26.12 Publishing History
 
 ### PublishEvent
 
 -   publishEventId (PK)
 -   tenantId
 -   venueId
--   type
+-   type (PLAYLIST, SCHEDULE, CONTENT_GROUP)
 -   entityId
 -   version fields
 -   publishedByUserId
 -   publishedAtUtc
+-   propagatedPlaylistIds (nullable, JSON array — populated when a
+    content group publish triggers auto-propagation; lists the
+    playlist IDs that were re-published)
 
 ------------------------------------------------------------------------
 
-## 26.12 Presence
+## 26.13 Presence
 
 ### EditorPresence
 
 -   presenceId (PK)
 -   tenantId
--   resourceType
+-   resourceType (PLAYLIST, SCHEDULE, CONTENT_GROUP)
 -   resourceId
 -   userId
 -   expiresAtUtc
@@ -1502,6 +1634,10 @@ When rate limited (429 Too Many Requests):
 
 Player behaviour on 429: back off using the `Retry-After` value,
 falling back to exponential backoff if the header is missing.
+
+Note: when a content group is published with `propagate: true`, the
+initial publish and all downstream playlist re-publishes count as a
+single publish operation against the rate limit.
 
 Limits are tuneable per tenant for enterprise customers.
 
@@ -1618,6 +1754,22 @@ Playlists:
 -   `PUT /v1/library/playlists/{playlistId}/reorder`
 -   `POST /v1/library/playlists/{playlistId}/publish`
 
+Content groups:
+
+-   `GET /v1/library/content-groups`
+-   `POST /v1/library/content-groups`
+-   `GET /v1/library/content-groups/{contentGroupId}`
+-   `PUT /v1/library/content-groups/{contentGroupId}`
+-   `DELETE /v1/library/content-groups/{contentGroupId}`
+-   `PUT /v1/library/content-groups/{contentGroupId}/items`
+-   `PUT /v1/library/content-groups/{contentGroupId}/reorder`
+-   `POST /v1/library/content-groups/{contentGroupId}/publish`
+-   `POST /v1/library/content-groups/{contentGroupId}/rollback`
+
+Library playlist items may reference a content group via
+`contentGroupId` instead of `assetId`. Each item must specify one
+or the other, not both.
+
 Presence endpoints support editing coordination.
 
 ------------------------------------------------------------------------
@@ -1645,6 +1797,22 @@ Venue content:
 -   `PUT /v1/venues/{venueId}/playlists/{playlistId}/items`
 -   `PUT /v1/venues/{venueId}/playlists/{playlistId}/reorder`
 -   `POST /v1/venues/{venueId}/playlists/{playlistId}/publish`
+
+Content groups:
+
+-   `GET /v1/venues/{venueId}/content-groups`
+-   `POST /v1/venues/{venueId}/content-groups`
+-   `GET /v1/venues/{venueId}/content-groups/{contentGroupId}`
+-   `PUT /v1/venues/{venueId}/content-groups/{contentGroupId}`
+-   `DELETE /v1/venues/{venueId}/content-groups/{contentGroupId}`
+-   `PUT /v1/venues/{venueId}/content-groups/{contentGroupId}/items`
+-   `PUT /v1/venues/{venueId}/content-groups/{contentGroupId}/reorder`
+-   `POST /v1/venues/{venueId}/content-groups/{contentGroupId}/publish`
+-   `POST /v1/venues/{venueId}/content-groups/{contentGroupId}/rollback`
+
+Venue playlist items may reference a content group via
+`contentGroupId` instead of `assetId`. Each item must specify one
+or the other, not both.
 
 Scheduling: - `GET /v1/venues/{venueId}/scheduleset` -
 `POST /v1/venues/{venueId}/scheduleset/slots` -
@@ -1953,6 +2121,8 @@ Optional admin features:
 
 -   `POST /v1/library/playlists/{playlistId}/rollback`
 -   `POST /v1/venues/{venueId}/scheduleset/rollback`
+-   `POST /v1/library/content-groups/{contentGroupId}/rollback`
+-   `POST /v1/venues/{venueId}/content-groups/{contentGroupId}/rollback`
 
 ------------------------------------------------------------------------
 
@@ -1964,6 +2134,65 @@ Key enforcement rules:
 -   Schedule publish requires published playlists.
 -   Venue access validated per tenant.
 -   Unauthorized tenant access returns 404.
+-   Content group items: each item must specify either `assetId` or
+    `contentGroupId`, but not both (mutual exclusivity constraint).
+-   Content group publish requires all referenced assets to be READY
+    and all referenced child groups to have a published version.
+-   Content group nesting: maximum depth of 3 levels. Validated on
+    save using depth-limited traversal.
+-   Cycle detection: when adding a child group reference, the system
+    traverses the child's descendants to verify the parent group does
+    not appear, preventing circular references. Returns 422 with
+    error code `CYCLE_DETECTED` if violated.
+
+------------------------------------------------------------------------
+
+# 27.11 Content Group Publish Detail
+
+Publishing a content group creates an immutable snapshot of its items
+and optionally triggers re-publication of all playlists that reference
+the group.
+
+### Library Content Group Publish
+
+`POST /v1/library/content-groups/{contentGroupId}/publish`
+
+Request:
+
+``` json
+{
+  "propagate": true
+}
+```
+
+-   `propagate` (boolean, required) — when `true`, the system
+    automatically re-publishes all playlists that reference this
+    content group. When `false`, playlists retain their existing
+    published content until manually re-published.
+
+200 Response:
+
+``` json
+{
+  "contentGroupId": "cg_01",
+  "publishedVersion": 3,
+  "publishedAtUtc": "2025-07-10T09:30:00Z",
+  "propagationSummary": {
+    "propagated": true,
+    "playlistsUpdated": 4,
+    "playlistsFailed": 0,
+    "playlistIds": ["pl_01", "pl_02", "pl_05", "pl_12"]
+  }
+}
+```
+
+When `propagate` is `false`, `propagationSummary` is omitted.
+
+### Venue Content Group Publish
+
+`POST /v1/venues/{venueId}/content-groups/{contentGroupId}/publish`
+
+Same request/response schema as the library endpoint above.
 
 ------------------------------------------------------------------------
 
@@ -2258,13 +2487,14 @@ that can be extracted later:
 1.  Auth
 2.  Tenant/Venue
 3.  Content
-4.  Playlist
-5.  Scheduling
-6.  Devices
-7.  Playback (manifest resolver)
-8.  Commands
-9.  Telemetry
-10. Operations/Alerts
+4.  Content Groups
+5.  Playlist
+6.  Scheduling
+7.  Devices
+8.  Playback (manifest resolver)
+9.  Commands
+10. Telemetry
+11. Operations/Alerts
 
 ------------------------------------------------------------------------
 
@@ -2294,22 +2524,40 @@ that can be extracted later:
 -   Thumbnail generation.
 -   Optional transcoding orchestration.
 
-### 29.4.4 Playlist Module
+### 29.4.4 Content Group Module
+
+-   Content group CRUD (create, read, update, delete).
+-   Draft editing + ETag concurrency (same pattern as playlists).
+-   Items may reference assets (assetId) or other content groups
+    (childGroupId), but not both on the same item.
+-   Nesting validation: maximum depth 3. Cycle detection on save
+    using depth-limited traversal of childGroupId references.
+-   Publish snapshot creation and rollback support.
+-   Propagation trigger: on publish, admin chooses auto-propagate
+    (re-publish all referencing playlists) or manual (playlists
+    updated on next manual publish).
+-   Tenant-scoped and venue-scoped content groups supported.
+
+### 29.4.5 Playlist Module
 
 -   Playlist CRUD and ordering.
 -   Draft editing + ETag concurrency.
 -   Publish snapshot creation and rollback support.
 -   Presence indicator integration.
 -   Increments venue epoch when shared playlist publishes affect venues.
+-   Content group expansion at publish time: resolves content group
+    references to flat asset lists in PlaylistPublishedItem records,
+    recording sourceContentGroupId and sourceContentGroupVersion
+    for audit trail.
 
-### 29.4.5 Scheduling Module
+### 29.4.6 Scheduling Module
 
 -   Draft schedule editing + ETag concurrency.
 -   Publish schedule snapshot.
 -   Validates playlist visibility and published state.
 -   Increments venue epoch on publish.
 
-### 29.4.6 Devices Module
+### 29.4.7 Devices Module
 
 -   Pairing code generation and claim.
 -   Device registration and configuration.
@@ -2317,7 +2565,7 @@ that can be extracted later:
 -   Command creation for remote support.
 -   Tracks last seen and status summaries.
 
-### 29.4.7 Playback / Manifest Resolver Module
+### 29.4.8 Playback / Manifest Resolver Module
 
 -   Resolves winning published playlist for a device at current time.
 -   Builds manifest payload (settings + playlist items).
@@ -2325,21 +2573,21 @@ that can be extracted later:
 -   Uses venue epoch for fast invalidation.
 -   Caches resolved results briefly for high throughput.
 
-### 29.4.8 Commands Module
+### 29.4.9 Commands Module
 
 -   Maintains per-device command queue.
 -   Supports device polling.
 -   Tracks delivery and results.
 -   Exposes command history to admins.
 
-### 29.4.9 Telemetry Module
+### 29.4.10 Telemetry Module
 
 -   Ingests heartbeats (updates DeviceStatus).
 -   Ingests events (append DeviceEvent).
 -   Optional async ingestion pipeline when volume grows.
 -   Supports retention/rollups.
 
-### 29.4.10 Operations / Alerts Module
+### 29.4.11 Operations / Alerts Module
 
 -   Offline detection and error pattern flagging.
 -   Low disk / repeated download failures.
@@ -2357,6 +2605,8 @@ Required worker tasks:
 -   Cleanup jobs (expire pairing codes, commands, presence records).
 -   Telemetry retention/aggregation (optional).
 -   Orphan cleanup for failed uploads.
+-   Content group propagation (re-publish referencing playlists when
+    a content group is published with auto-propagate enabled).
 
 ------------------------------------------------------------------------
 
@@ -2396,6 +2646,26 @@ increments
 1.  Device posts heartbeat/events
 2.  Backend updates DeviceStatus and writes DeviceEvent
 3.  Alerts process flags issues
+
+### Content Group Update with Auto-Propagate
+
+1.  Admin edits content group draft (add/remove/reorder assets)
+2.  Admin publishes content group with `propagate: true`
+3.  System snapshots content group published items
+4.  System identifies all playlists referencing this content group
+5.  For each referencing playlist, system re-publishes with expanded group items
+6.  Venue epochs increment for affected venues
+7.  Devices poll and stage updated manifests
+
+### Content Group Update with Manual Re-publish
+
+1.  Admin edits content group draft (add/remove/reorder assets)
+2.  Admin publishes content group with `propagate: false`
+3.  System snapshots content group published items
+4.  Referencing playlists retain their existing published content
+5.  Admin manually re-publishes each playlist when ready
+6.  Venue epochs increment per playlist publish
+7.  Devices poll and stage updated manifests
 
 ------------------------------------------------------------------------
 
