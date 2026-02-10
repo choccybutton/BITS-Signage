@@ -10,15 +10,8 @@ C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Applicati
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\BITS.Signage.Application.Tests.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\BITS.Signage.Application.Tests.pdb
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\FluentValidation.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\MediatR.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\MediatR.Contracts.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.Extensions.Logging.Abstractions.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.TestPlatform.CoreUtilities.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.TestPlatform.PlatformAbstractions.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
@@ -27,7 +20,6 @@ C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Applicati
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.TestPlatform.Utilities.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.VisualStudio.TestPlatform.Common.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Newtonsoft.Json.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\System.Diagnostics.DiagnosticSource.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\xunit.abstractions.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\xunit.assert.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\xunit.core.dll
@@ -115,3 +107,4 @@ C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Applicati
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\obj\Debug\net9.0\BITS.Signage.Application.Tests.pdb
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\obj\Debug\net9.0\BITS.Signage.Application.Tests.genruntimeconfig.cache
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\obj\Debug\net9.0\ref\BITS.Signage.Application.Tests.dll
+C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Application.Tests\bin\Debug\net9.0\Microsoft.Extensions.DependencyInjection.dll

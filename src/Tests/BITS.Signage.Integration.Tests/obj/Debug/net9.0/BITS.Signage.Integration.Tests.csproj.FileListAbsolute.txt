@@ -16,8 +16,6 @@ C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integrati
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\BITS.Signage.Integration.Tests.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\BITS.Signage.Integration.Tests.pdb
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\FluentValidation.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\MediatR.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\MediatR.Contracts.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll
@@ -25,7 +23,6 @@ C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integrati
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
@@ -45,7 +42,6 @@ C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integrati
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Pipelines.Sockets.Unofficial.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\StackExchange.Redis.dll
-C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\System.Diagnostics.DiagnosticSource.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\System.IO.Hashing.dll
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\xunit.abstractions.dll
@@ -139,3 +135,4 @@ C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integrati
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\obj\Debug\net9.0\BITS.Signage.Integration.Tests.pdb
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\obj\Debug\net9.0\BITS.Signage.Integration.Tests.genruntimeconfig.cache
 C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\obj\Debug\net9.0\ref\BITS.Signage.Integration.Tests.dll
+C:\Dev\repos\BITS Signage Solution\BITS-Signage\src\Tests\BITS.Signage.Integration.Tests\bin\Debug\net9.0\Microsoft.Extensions.DependencyInjection.dll

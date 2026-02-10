@@ -54,9 +54,18 @@ BITS-Signage/
 - **Mappers** — DTO ↔ Domain entity conversion
 - **Interfaces** — Abstractions for infrastructure concerns
 
-**Technology:** MediatR, FluentValidation
+**Technology:** Custom lightweight CQRS implementation (open-source, no licensing), FluentValidation
 
 **Dependencies:** Domain layer
+
+**CQRS Note:** Rather than using MediatR (which has licensing), we've implemented a simple, open-source CQRS pattern with:
+- `ICommand<TResult>` and `ICommand` interfaces
+- `IQuery<TResult>` interface
+- `ICommandHandler<TCommand, TResult>` and `ICommandHandler<TCommand>`
+- `IQueryHandler<TQuery, TResult>` interfaces
+- `IDispatcher` for routing commands and queries to handlers
+- Lightweight `Dispatcher` implementation using reflection and dependency injection
+- Automatic handler registration via `services.AddCqrs(assembly)`
 
 ### 3. Contracts Layer (`BITS.Signage.Contracts`)
 
@@ -147,7 +156,7 @@ BITS-Signage/
 - **Object Storage:** MinIO (local) / AWS S3 (production)
 - **Background Jobs:** Hangfire (TBD)
 - **Validation:** FluentValidation
-- **CQRS:** MediatR
+- **CQRS:** Custom lightweight implementation (open-source, no licensing)
 - **Testing:** xUnit, Moq
 - **API Auth:** JWT tokens
 

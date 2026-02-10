@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BITS.Signage.Application.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9328596e2450ac3c4739ab33ec3f1486eebbbe66")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e4970308a6cdc79f8c027b95409005fc8fc95a4f")]
 [assembly: System.Reflection.AssemblyProductAttribute("BITS.Signage.Application.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BITS.Signage.Application.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
