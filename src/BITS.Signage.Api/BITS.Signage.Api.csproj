@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BITS.Signage.Application\BITS.Signage.Application.csproj" />
     <ProjectReference Include="..\BITS.Signage.Infrastructure\BITS.Signage.Infrastructure.csproj" />
+    <ProjectReference Include="..\BITS.Signage.AppHost.ServiceDefaults\BITS.Signage.AppHost.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

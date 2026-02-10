@@ -5,7 +5,12 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(dotnet:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(dir:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(timeout 30 bash -c 'until docker exec bits-signage-postgres pg_isready -U bits_user; do sleep 1; done':*)",
+      "Bash(docker exec:*)",
+      "Bash(\"C:\\\\Dev\\\\repos\\\\BITS Signage Solution\\\\BITS-Signage\\\\src\\\\BITS.Signage.Api\\\\appsettings.Development.json\" << 'EOF'\n{\n  \"Logging\": {\n    \"LogLevel\": {\n      \"Default\": \"Information\",\n      \"Microsoft.EntityFrameworkCore\": \"Debug\",\n      \"Microsoft.AspNetCore\": \"Warning\"\n    }\n  },\n  \"ConnectionStrings\": {\n    \"PostgreSql\": \"Host=localhost;Port=5432;Database=bits_signage;Username=bits_user;Password=bits_password\",\n    \"Redis\": \"localhost:6379\"\n  },\n  \"Jwt\": {\n    \"SecretKey\": \"your-secret-key-at-least-32-characters-long-change-in-production\",\n    \"Issuer\": \"https://bits-signage.local\",\n    \"Audience\": \"https://bits-signage.local\"\n  },\n  \"AllowedHosts\": \"*\"\n}\nEOF)"
     ]
   }
 }

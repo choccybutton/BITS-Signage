@@ -1,8 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.10.14" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BITS.Signage.Application\BITS.Signage.Application.csproj" />
     <ProjectReference Include="..\BITS.Signage.Infrastructure\BITS.Signage.Infrastructure.csproj" />
+    <ProjectReference Include="..\BITS.Signage.AppHost.ServiceDefaults\BITS.Signage.AppHost.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

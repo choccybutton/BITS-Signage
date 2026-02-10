@@ -10,9 +10,11 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Aspire service defaults (service discovery, OpenTelemetry, health checks, resilience)
+builder.AddServiceDefaults();
+
 // Add services
 builder.Services.AddOpenApi();
-builder.Services.AddHealthChecks();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -49,14 +51,14 @@ builder.Services
         };
     });
 
-// Configure DbContext
-var connectionString = builder.Configuration.GetConnectionString("PostgreSql")
+// Configure DbContext (Aspire connection string from service discovery)
+var connectionString = builder.Configuration.GetConnectionString("bits-signage")
     ?? "Host=localhost;Port=5432;Database=bits_signage;Username=bits_user;Password=bits_password";
 builder.Services.AddDbContext<BitsSignageDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Configure Redis (Phase 0.4 - Rate limiting)
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis")
+// Configure Redis (Aspire service discovery)
+var redisConnectionString = builder.Configuration.GetConnectionString("redis")
     ?? "localhost:6379";
 var redisConnection = ConnectionMultiplexer.Connect(redisConnectionString);
 builder.Services.AddSingleton<IConnectionMultiplexer>(redisConnection);
@@ -84,8 +86,8 @@ app.UseAuthentication(); // Validate JWT tokens
 app.UseMiddleware<TenantIsolationMiddleware>(); // Extract tenant and user info
 app.UseMiddleware<RateLimitingMiddleware>(); // Rate limit after auth
 
-// Health check endpoint (per implementation plan 0.1)
-app.MapHealthChecks("/health");
+// Map Aspire default endpoints (health, alive checks)
+app.MapDefaultEndpoints();
 
 app.Run();
 
