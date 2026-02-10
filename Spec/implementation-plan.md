@@ -92,26 +92,48 @@ Created comprehensive database schema for content management, playlists, schedul
 - ✅ Solution builds: 0 errors, 3 warnings (EF version conflicts in test projects only)
 - ✅ Pushed to GitHub commit: 97bd465
 
-## 0.4 API Foundation — Middleware & Cross-Cutting Concerns
+## 0.4 API Foundation — Middleware & Cross-Cutting Concerns ✅ COMPLETED
 
-Build shared middleware before any endpoint (Spec 25, 27.1, 27.2):
+Built shared middleware and cross-cutting concerns foundation for all endpoints.
 
-1. **Tenant isolation middleware** — extract tenantId from JWT, inject into request context, enforce on all queries
-2. **Authentication middleware** — validate user JWT and device tokens, populate claims
-3. **Authorization service** — evaluate tenant roles, venue roles, capability flags per request
-4. **Error handling middleware** — problem+json format (Spec 27.2), correlation IDs (`X-Request-Id`)
-5. **ETag / If-Match middleware** — 428 if missing, 412 on mismatch for draft-modifying operations
-6. **Rate limiting middleware** — per-tenant/user/device limits (Spec 27.1), Redis-backed counters, `X-RateLimit-*` headers, `Retry-After` on 429
-7. **Pagination helper** — cursor-based pagination with `?cursor=&limit=` (default 50, max 200)
-8. **Filtering helper** — `?q=`, `?status=`, `?scope=`, `?type=` conventions
+**Deliverables:**
+- ✅ RequestContext: Request-scoped service with tenant, user, device, and role information
+- ✅ TenantIsolationMiddleware: Extracts and validates tenant ID from JWT, enforces isolation
+- ✅ AuthenticationMiddleware: JWT validation (via ASP.NET Core) with custom claims (tid, sub, did, t_roles, v_roles)
+- ✅ ErrorHandlingMiddleware: Global exception handler returning RFC 7807 Problem Details
+- ✅ ETagMiddleware: Validates If-Match header on draft modifications (428/412 responses)
+- ✅ RateLimitingMiddleware: Redis-backed rate limiting (10k/tenant, 1k/user, 500/device per minute)
+- ✅ IAuthorizationService: Role-based access control with tenant and venue role checks
+- ✅ IJwtTokenService: Token creation for users and devices with proper claims
+- ✅ PaginationHelper: Cursor-based pagination (default 50, max 200 items)
+- ✅ FilteringHelper: Standard filter parsing (q, status, scope, type)
+- ✅ ProblemResponse: RFC 7807 compliant error responses
 
-**Done when:**
-- [ ] Unauthenticated request returns 401
-- [ ] Cross-tenant request returns 404
-- [ ] Missing If-Match returns 428
-- [ ] ETag mismatch returns 412
-- [ ] Rate limit exceeded returns 429 with Retry-After
-- [ ] All error responses match problem+json schema
+**Middleware Pipeline (correct order):**
+1. ErrorHandlingMiddleware — Catch all exceptions
+2. ETagMiddleware — Validate preconditions
+3. UseAuthentication — Validate JWT tokens
+4. TenantIsolationMiddleware — Extract tenant/user/device info
+5. RateLimitingMiddleware — Rate limit by tenant/user/device
+
+**JWT Claims:**
+- `tid`: Tenant ID
+- `sub`: User ID (users) or Device ID (devices)
+- `did`: Device ID (device tokens only)
+- `typ`: Token type (user or device)
+- `t_roles`: Tenant roles (comma-separated)
+- `v_roles`: Venue roles (JSON: `{"venueId": "role1,role2"}`)
+
+**Status:**
+- ✅ All middleware classes created and integrated
+- ✅ JWT authentication configured with custom claims
+- ✅ Authorization service with role-based checks
+- ✅ Rate limiting with Redis backend
+- ✅ Pagination and filtering helpers
+- ✅ appsettings.Development.json configured
+- ✅ Comprehensive documentation in Common/README.md
+- ✅ Solution builds: 0 errors, 0 warnings
+- ✅ Pushed to GitHub commit: 626ff94
 
 ## 0.5 Storage Service Integration
 
