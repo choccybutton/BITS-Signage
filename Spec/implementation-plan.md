@@ -52,26 +52,25 @@ Created the .NET solution with a modular monolith layout.
 - ✅ All tests pass (4 test projects)
 - ✅ Pushed to GitHub commits: 311df98, 073b0af, b5a6530, 6becffa
 
-## 0.2 Database Schema — Core & Auth Tables
+## 0.2 Database Schema — Core & Auth Tables ✅ COMPLETED
 
-Create initial EF Core migrations for the foundational tables that
+Created initial EF Core migrations for the foundational tables that
 everything else depends on.
 
-Tables (Spec 26.3, 26.4, 26.5):
-- `Tenant` — tenantId, name, status, defaultTimezone, timestamps
-- `Venue` — venueId, tenantId (FK), name, timezone, address, fallbackPlaylistId, timestamps
-- `User` — userId, tenantId (FK), email, displayName, status, timestamps
-- `TenantUserRole` — tenantUserRoleId, tenantId, userId, role, timestamps
-- `VenueUserRole` — venueUserRoleId, tenantId, venueId, userId, role, timestamps
-- `Device` — deviceId, tenantId, venueId, name, primaryGroupId, timezone, runMode, launchOnBoot, autoRelaunch, keepAwake, watchdogReturnToForeground, orientation, status, lastSeenAtUtc, appVersion, timestamps
-- `DeviceGroup` — groupId, tenantId, venueId, name, timestamps
-- `DevicePairing` — pairingId, pairingCode, deviceHardwareId, status, expiresAtUtc, claimedByUserId, claimedTenantId, claimedVenueId, resultingDeviceId, timestamps
-- `DeviceAuthToken` — deviceAuthTokenId, tenantId, venueId, deviceId, tokenHash, status, issuedAtUtc, timestamps
+**Deliverables:**
+- ✅ 9 domain entities: Tenant, Venue, User, TenantUserRole, VenueUserRole, Device, DeviceGroup, DevicePairing, DeviceAuthToken
+- ✅ BitsSignageDbContext with Fluent API configuration for all entities
+- ✅ Proper field lengths, constraints, and navigation properties
+- ✅ Foreign key relationships with appropriate cascade behavior
+- ✅ Composite indexes on hot query paths (tenantId, venueId, deviceId, email)
+- ✅ Initial EF Core migration (20260210071817_InitialCreate)
 
-**Done when:**
-- [ ] Migration applies cleanly to empty PostgreSQL database
-- [ ] All FK constraints verified
-- [ ] Indexes on tenantId, venueId where needed
+**Status:**
+- ✅ Migration applies cleanly to PostgreSQL 16 database
+- ✅ All 14 FK constraints verified and functional
+- ✅ Indexes created on: tenantId, venueId, deviceId, Status, DeletedAtUtc, Email (unique), Role-based composites
+- ✅ Solution builds: 0 errors, 0 warnings
+- ✅ Pushed to GitHub commit: 0f11c20
 
 ## 0.3 Database Schema — Content, Playlist, Schedule Tables
 
