@@ -11,12 +11,13 @@
 ✅ **Build & Dependencies**
 - `dotnet build` works cleanly (0 errors, 0 warnings)
 - Core NuGet packages installed:
-  - **MediatR 14.0.0** — CQRS pattern (commands/queries)
+  - **Custom lightweight CQRS** — Open-source CQRS pattern (no licensing concerns)
   - **FluentValidation 12.1.1** — Data validation
   - **EF Core 9.0.2** — ORM with PostgreSQL
   - **Npgsql 9.0.1** — PostgreSQL driver
   - **StackExchange.Redis 2.10.14** — Caching
   - **JWT Bearer 9.0.2** — Authentication
+  - **Microsoft.Extensions.DependencyInjection** — Dependency injection
 
 ✅ **Docker Local Development**
 - `docker-compose.yml` with PostgreSQL 16, Redis 7, MinIO
@@ -110,7 +111,7 @@ db/
 ## Key Architectural Decisions
 
 1. **Clean Architecture** — Strict layer separation, testable, framework-agnostic
-2. **CQRS** — Commands for writes, Queries for reads (via MediatR)
+2. **CQRS** — Commands for writes, Queries for reads (custom open-source implementation, no licensing)
 3. **Repository Pattern** — Data access abstraction, easy to mock
 4. **Dependency Injection** — All services registered in Program.cs
 5. **PostgreSQL + EF Core** — Type-safe LINQ queries, migrations
