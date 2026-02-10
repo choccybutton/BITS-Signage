@@ -1,0 +1,42 @@
+# Build results
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.runtimeconfig.json
+*.staticwebassets.endpoints.json
+*.staticwebassets.json
+
+# IDE
+.vs/
+.vscode/
+*.swp
+*.swo
+*.user
+*.userprefs
+*.suo
+*~
+.DS_Store
+
+# NuGet
+.nuget/
+packages/
+
+# Test Coverage
+coverage/
+*.coverage
+OpenCover/
+
+# Local environment files
+.env
+.env.local
+appsettings.*.local.json
+
+# Node (for future mobile/frontend)
+node_modules/
+.next/
+dist/
+
+# Database migrations (temporary files)
+db/migrations/*.Designer.cs
