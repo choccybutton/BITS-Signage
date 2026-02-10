@@ -3,6 +3,7 @@ using System;
 using BITS.Signage.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BITS.Signage.Infrastructure.Migrations
 {
     [DbContext(typeof(BitsSignageDbContext))]
-    partial class BitsSignageDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260210072937_Phase0_3_ContentPlaylistSchedule")]
+    partial class Phase0_3_ContentPlaylistSchedule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
